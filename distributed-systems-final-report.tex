@@ -8,23 +8,14 @@
 
 \newcommand{\emailaddr}[1]{\href{mailto:#1}{\texttt{#1}}}
 
-\title{\LARGE
-    Final Report Template\\
-    (replace with your project name)
-}
-\subtitle{Final Report for the Distributed Systems Course [Your academic year here]}
+\title{\LARGE Tic-Tac-Toe}
+\subtitle{Final Report for the Distributed Systems Course [2024-2025]}
 
 % Consider watching:
 % https://www.youtube.com/watch?v=ihxSUsJB_14
 % https://www.youtube.com/watch?v=XTFWaV55uDo
 
-\author{
-    Author 1 \\ \emailaddr{author1@email.it}
-    \and
-    Author 2 \\ \emailaddr{author2@gmail.com}
-    \and
-    Author 3 \\ \emailaddr{author3@unibo.it}
-}
+\author{Filippo Pracucci \\ \emailaddr{filippo.pracucci@studio.unibo.it}}
 
 \date{\today}
 
@@ -33,16 +24,24 @@
 \maketitle
 
 \begin{abstract}
-    Up to $\sim$2000 characters briefly describing the project.
+  %  Up to $\sim$2000 characters briefly describing the project.
+  This report describes the project developed for the 2024-2025 Distributed Systems course called \textbf{Tic-Tac-Toe}.
+  The project consists on a distributed implementation of a variant of the classic multiplayer game
+  \href{https://en.wikipedia.org/wiki/Tic-tac-toe}{Tic-Tac-Toe}, in which two players can play against each other,
+  creating a game or joining an existing one. The game consists in the two players placing alternatively their marks on
+  a 3x3 grid; the first player who succeeds in placing three marks in an horizontal, vertical, or diagonal row wins the
+  game. The variant consists in removing a random mark from the grid at each turn, after the third mark of the player
+  has been placed, meaning that every player can have at most three marks on the grid at any time. In this way, there
+  is no possibility of a draw, because the game can potentially last forever.
 \end{abstract}
 
-\section*{Disclaimer (if needed)}
+\section*{Disclaimer}
 
-During the preparation of this work, the author(s) used [NAME TOOL / SERVICE] to [REASON].
+During the preparation of this work, the author used GitHub Copilot to assist with code completion and an agent
+configured in the file \texttt{.github/agents/docs.agent.md} to generate the API documentation.
 
-After using this tool/service, 
-the author(s) reviewed and edited the content as needed 
-and take(s) full responsibility for the content of the final report/artifact.
+After using this tools/services, the author reviewed and edited the content as needed 
+and takes full responsibility for the content of the final report/artifact.
 
 \section*{Quick \LaTeX{} suggestions}
 
@@ -122,6 +121,33 @@ Here you should explain:
   %
   In any case, please elaborate.
 \end{itemize}
+
+The \textbf{Tic-Tac-Toe} game can be played in two modes:
+\begin{itemize}
+  \item \textit{local}: in which two players can play against each other on the same machine;
+  \item \textit{remote}: in which two players can play against each other on different machines,
+  connected to the same network.
+\end{itemize}
+
+In case of \textit{local} mode, the game starts immediately, so the GUI with the grid is displayed; while in case of
+\textit{remote} mode the game starts with a screen representing a lobby menu, in which the players can choose to
+either create a new game or join an existing one. After that the game starts and the GUI with the grid is displayed.
+During the game, there is the possibility to chat with the other player through the terminal used to launch the game.
+From now on, the report will focus on the \textit{remote} mode, since it is the one addressing the distributed system
+features.
+
+\subsection{Use case description}\label{use-case-description}
+
+The users interact with the system through a computer connected to the network. During the game, the players do not
+interact with the system very frequently, since it is a turn-based game, so they have to wait for the other player to
+make a move; hovewer, they can chat with the other player, so in that case the interaction frequency gets higher.
+The game interactions are done by clicking on the GUI's grid with the mouse to place a mark, while the chat
+interactions are done by typing via the keyboard in the terminal.
+
+The only data that needs to be stored is the list of the games that have been created, but not yet full, so that
+another player can join them. This is done by the server, which stores in a \textit{JSON} object the pairs of
+game's identifier and the symbol available that must be used to join the game. The \textit{JSON} file is temporary,
+since it is created when the server starts and deleted when the server stops, so it is not persistent.
 
 \section{Requirements Elicitation and Analysis}\label{requirements}
 
