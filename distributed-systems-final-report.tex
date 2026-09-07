@@ -187,6 +187,37 @@ since it is created when the server starts and deleted when the server stops, so
   \end{itemize}
 \end{itemize}
 
+\subsection{Functional requirements}\label{functional-requirements}
+
+\begin{enumerate}
+  \item A player can create a new game or join an existing one while in the lobby menu;
+  \item A player can select which game to join from the list of available ones in the lobby menu and the only symbol
+  available for the game selected;
+  \item a player can place a mark (\textit{X} or \textit{O}) on the grid during its turn via the GUI clicking with
+  the mouse;
+  \item if a player tries to place a mark on a cell that is already occupied or when it is not its turn, the action
+  is silently ignored;
+  \item a player can chat with the other player during the game via the terminal typing with the keyboard;
+  \item a player can see the current state of the game through the grid represented in the GUI;
+  \item a player can leave the game at any time pressing the \textit{Esc} key, which will cause its defeat and the
+  return of both players to the lobby menu;
+  \item the result of the game is displayed to both players at the end of the game in the lobby menu;
+  \item after the third turn of a player, a random mark of that player is removed from the grid at each turn;
+  \item if the opponent disconnects from the game, the other player is notified and returned to the lobby menu;
+  \item if the server goes down, both players are notified and terminated;
+  \item the game ends when one of the two players places three marks in an horizontal, vertical, or diagonal row;
+  so the players return to the lobby menu and the result of the game is displayed.
+\end{enumerate}
+
+\subsection{Non-functional requirements}\label{non-functional-requirements}
+
+\begin{enumerate}
+  \item The game must run on different operating systems, such as Windows, Linux, and macOS;
+  \item the server must be able to handle multiple games being played simultaneously by different pairs of players;
+  \item latency must be low enough to allow for a smooth and responsive gaming experience, keeping the consistency
+  of the game state between the two players.
+\end{enumerate}
+
 \subsection{Relevant Distributed System Features}
 \label{ds-features}
 
@@ -249,6 +280,36 @@ Motivate which distributed system features are relevant for your project, and wh
     \item Are there budget constraints for development, deployment, or operation?
     \item Is minimizing resource usage important?
   \end{itemize}
+\end{itemize}
+
+\begin{itemize}
+  \item \textbf{Transparency}: the only distribution detail known to the users is that if they want to play against
+  another player not on the same machine, they have to select the \textit{remote} mode; all the other distribution
+  aspects are hidden from the users, such as the architecture and the communications. Conversely, the development
+  perspective is aware of the distribution, due to the explicit design and management of the system.
+  \item \textbf{Fault tolerance and dependability}: failures client-side are handled by terminating the game and
+  returning the other player to the lobby menu, with the defeat of the player who disconnected. While failures
+  server-side are handled by terminating the game and notifying both players of the server crash. It is not
+  expected a recovery of the ongoing games after a server crash.
+  \item \textbf{Scalability}: the server is able to handle multiple games simultaneously, but given that at the moment
+  there is only one server, the scalability is limited by the server's resources. This means that in the future,
+  it will be possible to increase the server replicas or resources in order to increase the scalability of the system.
+  \item \textbf{Security}: the application does not handle sensitive data, so neither authentication nor authorization
+  mechanisms are required. All the users have the same role, so also the same permissions, and they are considered
+  trusted.
+  \item \textbf{Resource sharing}: since the turn-based nature of the game, synchronization is a core aspect and that
+  is handled by means of overriding the state of the game in a client when it differs from the one owned by the
+  server. So the server holds the state of the game which is updated, and the clients are synchronized accordingly,
+  by means of an override.
+  \item \textbf{Openness, interoperability, heterogeneity}: the system is designed does not interact with external
+  systems and it is not expected to operate with heterogeneous components.
+  \item \textbf{Evolvability, maintainability}: the evolvability of the application is limited by the nature of the
+  game; but the aspects that can be extended are the players management, maybe with an authentication system, in
+  order to allow players to have a profile and a ranking. Other than that the dystributed aspects can be enhanced
+  for example by adding more servers to increase the scalability of the system and implementing a recovery mechanism.
+  \item \textbf{Performance and concurrency}: performances are not a concern, since the game is turn-based latency and
+  throughput are not critical aspects. The concurrency is limited to the number of games that can be played in
+  parallel, which is limited by the server's resources.
 \end{itemize}
 
 \section{Design}\label{design}
